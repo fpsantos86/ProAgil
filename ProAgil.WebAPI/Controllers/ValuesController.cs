@@ -31,7 +31,7 @@ namespace ProAgil.WebAPI.Controllers
                 var results = await _context.Eventos.ToListAsync();
                 return Ok(results);    
             }
-            catch (System.Exception ex)
+            catch (System.Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
             }
@@ -48,8 +48,8 @@ namespace ProAgil.WebAPI.Controllers
                 var results = await _context.Eventos.FirstOrDefaultAsync(x => x.EventoId == id);
                 return Ok(results);    
             }
-            catch (System.Exception ex)
-            {__id_0
+            catch (System.Exception)
+            {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
             }
         }
