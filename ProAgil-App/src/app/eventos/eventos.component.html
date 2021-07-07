@@ -128,6 +128,8 @@
 <div class="form-group col-md-4">
   <label>Data e Hora</label>
   <input type="text" class="form-control "
+  bsDatepicker
+  [bsConfig]="{ dateInputFormat : 'DD/MM/YYYY hh:mm a'}"
   [ngClass]="{'is-invalid': registerForm.get('dataEvento')?.errors?.required
   && registerForm.get('dataEvento')?.touched}"
   formControlName="dataEvento">
@@ -220,8 +222,8 @@
 <br>
 <br>
 
-<p>Tema hasError minlength: {{registerForm.get('tema')?.hasError('minlength') }}</p>
-<p>Tema Errors: {{registerForm.get('tema')?.errors | json}}</p>
+<!-- <p>Tema hasError minlength: {{registerForm.get('tema')?.hasError('minlength') }}</p>
+<p>Tema Errors: {{registerForm.get('tema')?.errors | json}}</p> -->
 <p>Form Value: {{registerForm.value | json }}</p>
 <p>Form Status: {{registerForm.status | json}}</p>
 
