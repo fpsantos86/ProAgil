@@ -1,5 +1,6 @@
 
 import { Component, OnInit, TemplateRef } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Evento } from '../_models/Evento';
 import { EventoService } from '../_services/evento.service';
@@ -16,13 +17,15 @@ export class EventosComponent implements OnInit {
   imagemLargura = 50;
   imagemMargem = 2;
   mostrarImagem = false;
-  modalRef: BsModalRef = new BsModalRef();
+  modalRef!: BsModalRef;
+  registerForm!: FormGroup;
 
   _filtroLista = '';
 
   constructor(
     private eventoService: EventoService,
-    private modalService: BsModalService)
+    private modalService: BsModalService,
+    private fb: FormBuilder,)
     {
 
     }
@@ -42,8 +45,10 @@ export class EventosComponent implements OnInit {
 
 
     ngOnInit() {
+      this.validation()
       this.getEventos();
     }
+
 
     filtrarEventos(filtrarPor: string):Evento[]{
 
@@ -53,23 +58,40 @@ export class EventosComponent implements OnInit {
         evento => evento.tema.toLocaleLowerCase()
         .indexOf(filtrarPor) !== -1);
 
-      }
+    }
 
-      alternarImagem(){
-        this.mostrarImagem = !this.mostrarImagem
-      }
+    alternarImagem(){
+      this.mostrarImagem = !this.mostrarImagem
+    }
 
-      getEventos(){
-        this.eventoService.getAllEvento().subscribe(
-          (_eventos: Evento[]) => {
-            this.eventos = _eventos;
-            this.eventosFiltrados = this.eventos
-            console.log(_eventos);
-          },
-          error =>{
-            console.log(error);
-          }
-          );
-        }
+    salvarAlteracao(){
 
-      }
+    }
+
+    validation(){
+      this.registerForm = this.fb.group({
+        tema: ['', [Validators.required, Validators.maxLength(50), Validators.minLength(4)]],
+        local: ['', Validators.required],
+        dataEvento: ['', Validators.required],
+        imagemURL: ['', Validators.required],
+        qtdPessoas: ['',
+          [Validators.required, Validators.max(120000)]],
+        telefone: ['', Validators.required],
+        email: ['',[Validators.required, Validators.email]]
+
+      });
+    }
+
+    getEventos(){
+      this.eventoService.getAllEvento().subscribe(
+        (_eventos: Evento[]) => {
+          this.eventos = _eventos;
+          this.eventosFiltrados = this.eventos
+          console.log(_eventos);
+        },
+        error =>{
+          console.log(error);
+        });
+    }
+
+}
