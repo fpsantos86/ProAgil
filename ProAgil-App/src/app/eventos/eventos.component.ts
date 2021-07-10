@@ -94,8 +94,7 @@ export class EventosComponent implements OnInit {
         if (this.modoSalvar ==='post'){
           this.evento = Object.assign({}, this.registerForm.value);
           this.eventoService.postEvento(this.evento).subscribe(
-            (novoEvento: Evento)=> {
-              console.log(novoEvento);
+            (novoEvento)=> {
               template.hide();
               this.getEventos();
             },
@@ -104,10 +103,10 @@ export class EventosComponent implements OnInit {
             }
           );
         }else{
-          this.evento = Object.assign({}, this.registerForm.value);
+          this.evento = Object.assign({id:this.evento.id}, this.registerForm.value);
           this.eventoService.putEvento(this.evento).subscribe(
-            (novoEvento: Evento)=> {
-              console.log(novoEvento);
+            ()=> {
+
               template.hide();
               this.getEventos();
             },
