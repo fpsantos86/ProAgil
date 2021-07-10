@@ -7,6 +7,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { templateJitUrl } from '@angular/compiler';
 
 defineLocale('pt-br', ptBrLocale)
 
@@ -19,10 +20,14 @@ export class EventosComponent implements OnInit {
 
   eventosFiltrados: Evento[] = [];
   eventos: Evento[] = [];
+
+  evento: Evento;
+  modoSalvar = 'post';
+
   imagemLargura = 50;
   imagemMargem = 2;
   mostrarImagem = false;
-  modalRef!: BsModalRef;
+
   registerForm!: FormGroup;
 
   _filtroLista = '';
@@ -45,13 +50,27 @@ export class EventosComponent implements OnInit {
       this.eventosFiltrados = this.filtroLista ? this.filtrarEventos(this.filtroLista) : this.eventos;
     }
 
-    openModal(template: TemplateRef<any>){
-      this.modalRef = this.modalService.show(template);
+    editarEvento(evento:Evento,template: any){
+      this.modoSalvar = 'put';
+      this.openModal(template);
+      this.evento = evento;
+      this.registerForm.patchValue(evento);
+
+    }
+
+    novoEvento(template: any){
+      this.modoSalvar = 'post'
+      this.openModal(template)
+    }
+
+    openModal(template: any){
+      this.registerForm.reset();
+      template.show();
     }
 
 
     ngOnInit() {
-      this.validation()
+      this.validation();
       this.getEventos();
     }
 
@@ -70,8 +89,36 @@ export class EventosComponent implements OnInit {
       this.mostrarImagem = !this.mostrarImagem
     }
 
-    salvarAlteracao(){
+    salvarAlteracao(template: any){
+      if(this.registerForm.valid){
+        if (this.modoSalvar ==='post'){
+          this.evento = Object.assign({}, this.registerForm.value);
+          this.eventoService.postEvento(this.evento).subscribe(
+            (novoEvento: Evento)=> {
+              console.log(novoEvento);
+              template.hide();
+              this.getEventos();
+            },
+            error=>{
+              console.log(error);
+            }
+          );
+        }else{
+          this.evento = Object.assign({}, this.registerForm.value);
+          this.eventoService.putEvento(this.evento).subscribe(
+            (novoEvento: Evento)=> {
+              console.log(novoEvento);
+              template.hide();
+              this.getEventos();
+            },
+            error=>{
+              console.log(error);
+            }
+          );
+        }
 
+
+      }
     }
 
     validation(){

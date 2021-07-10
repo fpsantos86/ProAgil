@@ -18,13 +18,13 @@ import { DateTimeFormatPipePipe } from './_helps/DateTimeFormatPipe.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
       EventosComponent,
       NavComponent,
       DateTimeFormatPipePipe,
-
    ],
   imports: [
     BrowserModule,
