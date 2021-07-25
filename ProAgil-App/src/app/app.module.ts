@@ -46,11 +46,11 @@ import { DateTimeFormatPipePipe } from './_helps/DateTimeFormatPipe.pipe';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    ToastrModule.forRoot({
-      timeOut: 10000,
-      positionClass: 'toast-bottom-right',
-      preventDuplicates: true,
-    }),
+    // ToastrModule.forRoot({
+    //   timeOut: 10000,
+    //   positionClass: 'toast-bottom-right',
+    //   preventDuplicates: true,
+    // }),
 
 
   ],

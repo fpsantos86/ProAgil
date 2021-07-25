@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -37,6 +39,36 @@ namespace ProAgil.WebAPI.Controllers
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, $"Banco de Dados Falhou {ex.Message}");
             }
+        }
+
+         [HttpPost("upload")]
+        public async Task<IActionResult> Upload()
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+
+                var folderName = Path.Combine("Resources","Images");
+
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                if(file.Length > 0){
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName;
+                    var fullPath = Path.Combine(pathToSave, fileName.Replace("\"", " ").Trim());
+
+                    using(var stream = new FileStream(fullPath, FileMode.Create)){
+                        file.CopyTo(stream);
+                    }
+                }
+
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"O sistema de srquivos falhou {ex.Message}");
+            }
+
+            return BadRequest("Erro ao tentar realizar upload");
         }
 
         [HttpGet("{EventoId}")]
@@ -98,17 +130,18 @@ namespace ProAgil.WebAPI.Controllers
         }
 
         [HttpPut("{EventoId}")]
-        public async Task<IActionResult> Put(int EventoId, Evento model)
+        public async Task<IActionResult> Put(int EventoId, EventoDto model)
         {
             try
             {
+                
                 var evento = await _repo.GetAllEventoAsyncById(EventoId, false);
                 if (evento == null) return NotFound();
 
                 _mapper.Map(model,evento);
-
+                
                 _repo.Update(evento);
-
+                
                 if (await _repo.SaveChangesAsync())
                 {
                     return Created($"/api/evento/{model.Id}",  _mapper.Map<EventoDto>(evento));
